@@ -2168,7 +2168,7 @@ public class BVGraph extends ImmutableGraph implements CompressionFlags, Seriali
 
 		executorService.shutdown();
 		if (problem != null) {
-			Throwables.throwIfUnchecked(problem);
+			//Throwables.throwIfUnchecked(problem);
 			throw new RuntimeException(problem);
 		}
 
