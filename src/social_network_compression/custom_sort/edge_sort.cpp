@@ -23,17 +23,14 @@ Edge_Sort::~Edge_Sort()
         delete[] _row_ptr_end;
 }
 
-// TODO clean up this function a bit
-bool Edge_Sort::read_edge_list(const std::string &edge_list, const std::string &sorted_list_dest)
+
+bool Edge_Sort::read_edge_list(const std::string &edge_list, std::vector<std::vector<std::string>> *content, std::map<std::string, int> *node_identifier_to_index)
 {
     std::cout << "Read in " << edge_list << std::endl;
-    std::vector<std::vector<std::string>> content;
     std::vector<std::string> row;
     std::string line, node;
     const int src_ind = 0;
     const int tar_ind = 1;
-
-    std::map<std::string, int> node_identifier_to_index;
     int node_ind = 0;
 
     std::fstream file(edge_list, std::ios::in);
@@ -52,12 +49,12 @@ bool Edge_Sort::read_edge_list(const std::string &edge_list, const std::string &
             // Only add valid lines of the file
             if (row.size() == 2)
             {
-                content.push_back(row);
+                (*content).push_back(row);
 
                 for (const auto &n : row)
-                    if (node_identifier_to_index.count(n) == 0)
+                    if ((*node_identifier_to_index).count(n) == 0)
                     {
-                        node_identifier_to_index.insert({n, node_ind});
+                        (*node_identifier_to_index).insert({n, node_ind});
                         node_ind++;
                     }
             }
@@ -71,7 +68,7 @@ bool Edge_Sort::read_edge_list(const std::string &edge_list, const std::string &
 
     _node_count = node_ind;
 
-    /* SORT NODE: PUT IN FUNCTION */
+    // Provides a custom sort based on the newly assigned index of nodes
     struct
     {
         std::map<std::string, int> *mptr;
@@ -89,9 +86,23 @@ bool Edge_Sort::read_edge_list(const std::string &edge_list, const std::string &
         }
     } edge_comp;
 
-    edge_comp.mptr = &node_identifier_to_index;
+    edge_comp.mptr = node_identifier_to_index;
 
-    std::sort(content.begin(), content.end(), edge_comp);
+    std::sort((*content).begin(), (*content).end(), edge_comp);
+    return true;
+}
+
+
+bool Edge_Sort::load_graph(const std::string &edge_list)
+{
+    const int src_ind = 0;
+    const int tar_ind = 1;
+    std::vector<std::vector<std::string>> content;
+    std::map<std::string, int> node_identifier_to_index;
+
+    bool read_succ = read_edge_list(edge_list, &content, &node_identifier_to_index);
+    if (!read_succ)
+        return false;
 
     std::cout << "File parsed sucessfully" << std::endl;
 
@@ -131,7 +142,6 @@ bool Edge_Sort::read_edge_list(const std::string &edge_list, const std::string &
 int Edge_Sort::compare_nodes(const int i, const int j, int *degree_i, int *degree_j)
 {
     // TODO check i and j ?
-
     *degree_i = _row_ptr_end[i] - _row_ptr_begin[i];
     *degree_j = _row_ptr_end[j] - _row_ptr_begin[j];
 
@@ -156,9 +166,13 @@ int Edge_Sort::compare_nodes(const int i, const int j, int *degree_i, int *degre
 bool Edge_Sort::write_sorted_nodes_to_file(std::list<int> &order, const std::string &sorted_list_dest)
 {
     
-    const std::string out_file(sorted_list_dest + ".graph-txt");
-    std::cout << "Writing result to " << out_file << std::endl;
-    std::ofstream file(out_file);
+    const std::string ascii_graph_file(sorted_list_dest + ".graph-txt");
+    std::ofstream ascii_graph(ascii_graph_file);
+
+    const std::string node_map_file(sorted_list_dest + ".node-mapping");
+    std::ofstream node_map(node_map_file);
+
+    std::cout << "Writing result to " << ascii_graph_file << " and " << node_map_file << std::endl;
 
     std::vector<int> order_mapping(_node_count);
     int index = 0;
@@ -166,10 +180,12 @@ bool Edge_Sort::write_sorted_nodes_to_file(std::list<int> &order, const std::str
     // Map a nodes index to their new ordered index
     for (auto const &node : order)
     {
+        node_map << index << " " << _node_identifier[node] << std::endl;
         order_mapping[node] = index;
         index++;
     }
 
+    ascii_graph << _node_count << std::endl;
     for (auto const &node : order)
     {
         std::vector<int> successors;
@@ -181,11 +197,12 @@ bool Edge_Sort::write_sorted_nodes_to_file(std::list<int> &order, const std::str
                   { return order_mapping[i] < order_mapping[j]; });
 
         for (auto const &n : successors)
-            file << order_mapping[n] << " ";
-        file << std::endl;
+            ascii_graph << order_mapping[n] << " ";
+        ascii_graph << std::endl;
     }
 
-    file.close();
+    ascii_graph.close();
+    node_map.close(); 
     std::cout << "Succesfully wrote result to file" << std::endl;
     return true;
 }

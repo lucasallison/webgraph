@@ -4,8 +4,11 @@
 #include <string>
 #include <map>
 #include <list>
+#include <vector>
 
-
+/*
+Base class for the sorting algorithm. Manages reading and writing graphs as well as storing them in appropriate formats.
+*/
 class Edge_Sort
 {
 
@@ -25,13 +28,17 @@ protected:
 
     bool write_sorted_nodes_to_file(std::list<int> &order, const std::string &sorted_list_dest);
 
+    // Reads in edgelist. Sets the node count and sorts them. This is done in case the edge list provided is not sorted
+    bool read_edge_list(const std::string &edge_list, std::vector<std::vector<std::string>> *content, std::map<std::string, int> *node_identifier_to_index);
+
+    
 
 public:
     Edge_Sort();
 
     virtual ~Edge_Sort();
 
-    bool read_edge_list(const std::string &edge_list, const std::string &sorted_list_dest);
+    bool load_graph(const std::string &edge_list);
 
     virtual bool sort(const std::string &sorted_list_dest);
 };
