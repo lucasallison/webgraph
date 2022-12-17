@@ -49,14 +49,14 @@ bool Edge_Sort::read_edge_list(const std::string &edge_list, std::vector<std::ve
             // Only add valid lines of the file
             if (row.size() == 2)
             {
-                (*content).push_back(row);
-
-                for (const auto &n : row)
+                for (const auto &n : row) 
                     if ((*node_identifier_to_index).count(n) == 0)
                     {
                         (*node_identifier_to_index).insert({n, node_ind});
                         node_ind++;
                     }
+
+                (*content).push_back(row);
             }
         }
     }
@@ -65,6 +65,7 @@ bool Edge_Sort::read_edge_list(const std::string &edge_list, std::vector<std::ve
         std::cerr << "Could not open file\n";
         return false;
     }
+    std::cout << "#Nodes: " << node_ind << ". #Edges: " << (*content).size() << std::endl;
 
     _node_count = node_ind;
 
