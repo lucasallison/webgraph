@@ -23,7 +23,6 @@ Edge_Sort::~Edge_Sort()
         delete[] _row_ptr_end;
 }
 
-
 bool Edge_Sort::read_edge_list(const std::string &edge_list, std::vector<std::vector<std::string>> *content, std::map<std::string, int> *node_identifier_to_index)
 {
     std::cout << "Read in " << edge_list << std::endl;
@@ -49,7 +48,7 @@ bool Edge_Sort::read_edge_list(const std::string &edge_list, std::vector<std::ve
             // Only add valid lines of the file
             if (row.size() == 2)
             {
-                for (const auto &n : row) 
+                for (const auto &n : row)
                     if ((*node_identifier_to_index).count(n) == 0)
                     {
                         (*node_identifier_to_index).insert({n, node_ind});
@@ -92,7 +91,6 @@ bool Edge_Sort::read_edge_list(const std::string &edge_list, std::vector<std::ve
     std::sort((*content).begin(), (*content).end(), edge_comp);
     return true;
 }
-
 
 bool Edge_Sort::load_graph(const std::string &edge_list)
 {
@@ -166,18 +164,18 @@ int Edge_Sort::compare_nodes(const int i, const int j, int *degree_i, int *degre
 
 bool Edge_Sort::write_sorted_nodes_to_file(std::list<int> &order, const std::string &sorted_list_dest)
 {
-    
-    const std::string ascii_graph_file(sorted_list_dest + ".graph-txt");
+
+    const std::string ascii_graph_file(sorted_list_dest + "-sorted.graph-txt");
     std::ofstream ascii_graph(ascii_graph_file);
 
-    const std::string node_map_file(sorted_list_dest + ".node-mapping");
+    const std::string node_map_file(sorted_list_dest + "-sorted.node-mapping");
     std::ofstream node_map(node_map_file);
 
     std::cout << "Writing result to " << ascii_graph_file << " and " << node_map_file << std::endl;
 
     std::vector<int> order_mapping(_node_count);
     int index = 0;
-    
+
     // Map a nodes index to their new ordered index
     for (auto const &node : order)
     {
@@ -203,9 +201,27 @@ bool Edge_Sort::write_sorted_nodes_to_file(std::list<int> &order, const std::str
     }
 
     ascii_graph.close();
-    node_map.close(); 
+    node_map.close();
     std::cout << "Succesfully wrote result to file" << std::endl;
     return true;
+}
+
+void Edge_Sort::convert_to_txt_graph(const std::string &dest_file)
+{
+
+    std::cout << "Converting edge list to ASCII graph format" << std::endl;
+    const std::string ascii_graph_file(dest_file + "-converted.graph-txt");
+    std::ofstream ascii_graph(ascii_graph_file);
+
+    ascii_graph << _node_count << std::endl;
+    for (int n = 0; n < _node_count; n++)
+    {
+        for (int i = _row_ptr_begin[n]; i < _row_ptr_end[n]; i++)
+        {
+            ascii_graph << _col_ind[i] << " ";
+        }
+        ascii_graph << std::endl;
+    }
 }
 
 bool Edge_Sort::sort(const std::string &sorted_list_dest)

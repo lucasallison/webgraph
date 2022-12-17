@@ -5,6 +5,7 @@
 #include "similarity_sort/sim_sort.h"
 
 const std::string SIM_SORT_ARG = "similarity";
+const std::string CONVERT = "convert";
 
 int main(int argc, char **argv)
 {
@@ -14,7 +15,7 @@ int main(int argc, char **argv)
 	{
 		std::cerr << "Three arguments expected but "
 				  << argc - 1 << " where given. Program should be called as follows: " << std::endl;
-			
+
 		std::cerr << "main sort_algorithm src_file dst_file" << std::endl;
 		return -1;
 	}
@@ -26,10 +27,14 @@ int main(int argc, char **argv)
 	{
 		edge_sorter = new Sim_Sort();
 	}
+	else if (sort_choice.compare(CONVERT) == 0)
+	{
+		edge_sorter = new Edge_Sort();
+	}
 	else
 	{
 		// TODO improve
-		std::cerr << sort_choice << " sorting has not been implemented. Use: "  << SIM_SORT_ARG << std::endl;
+		std::cerr << sort_choice << " sorting has not been implemented. Use: " << SIM_SORT_ARG << std::endl;
 		return -1;
 	}
 
@@ -42,7 +47,14 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-	edge_sorter->sort(dest_file);
+	if (sort_choice.compare(CONVERT) == 0)
+	{
+		edge_sorter->convert_to_txt_graph(dest_file);
+	}
+	else
+	{
+		edge_sorter->sort(dest_file);
+	}
 
 	delete edge_sorter;
 

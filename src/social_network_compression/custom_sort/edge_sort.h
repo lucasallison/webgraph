@@ -40,6 +40,8 @@ public:
 
     bool load_graph(const std::string &edge_list);
 
+    void convert_to_txt_graph(const std::string &dest_file);
+
     virtual bool sort(const std::string &sorted_list_dest);
 };
 
