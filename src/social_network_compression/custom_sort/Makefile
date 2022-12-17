@@ -2,7 +2,7 @@ CXX = g++
 CFLAGS = -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-unused-but-set-variable -O3 
 CXXFLAGS = $(CFLAGS) -std=c++11
 TARGET = main
-OBJDIR = obj
+OBJDIR = objs
 
 SIM_SORT_PATH = similarity_sort
 
