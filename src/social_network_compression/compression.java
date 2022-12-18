@@ -10,12 +10,12 @@ class compression {
 	
 	public static void main(final String args[]) throws IOException {
 
-		String baseName = "/home/lucas/Github/snacs/webgraph/src/social_network_compression/graphs/slashdot/slashdot-converted.graph-txt";
-		String comprName = "/home/lucas/Github/snacs/webgraph/src/social_network_compression/graphs/slashdot/slashdot.compressed";
+		String baseName = "...";
+		String comprName = "...";
 		ASCIIGraph inGraph = ASCIIGraph.loadOffline(baseName);
 		ArrayListMutableGraph graph = new ArrayListMutableGraph(inGraph); // by copying to a mutable graph, random access is possible
-		int windowSize = 4;
-		int referenceCount = BVGraph.DEFAULT_MAX_REF_COUNT;
+		int windowSize = 7;
+		int referenceCount = 3;
 		BVGraph.store(graph.immutableView(), comprName, windowSize, referenceCount, BVGraph.DEFAULT_MIN_INTERVAL_LENGTH, -1, 1, 0, null);
 	
 	}
