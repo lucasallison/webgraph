@@ -13,7 +13,7 @@ class compression {
 		String baseName = "...";
 		String comprName = "...";
 		ASCIIGraph inGraph = ASCIIGraph.loadOffline(baseName);
-		ArrayListMutableGraph graph = new ArrayListMutableGraph(inGraph); // by copying to a mutable graph, random access is possible
+		ArrayListMutableGraph graph = new ArrayListMutableGraph(inGraph);
 		int windowSize = 7;
 		int referenceCount = 3;
 		BVGraph.store(graph.immutableView(), comprName, windowSize, referenceCount, BVGraph.DEFAULT_MIN_INTERVAL_LENGTH, -1, 1, 0, null);
