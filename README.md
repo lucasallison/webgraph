@@ -19,7 +19,7 @@ Then, run `ant ivy-setupjars jar` and set your `CLASSPATH` by `source setcp.sh`
 seba (<mailto:sebastiano.vigna@unimi.it>)
 
 
-For specific
+Fork Specific
 ------------
 
 This fork contains tool to format social networks with the Webgraph framework. More information is provided in the subdirectory 'src/social_network_compression'.
